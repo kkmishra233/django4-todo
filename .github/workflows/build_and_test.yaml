@@ -1,0 +1,23 @@
+name: Build & Test
+
+env:
+  event_type: "on-demand-python-test"
+  sourceDir: "src"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger common workflow
+        env:
+          event_payload: '{"event_type":"${{env.event_type}}","client_payload":{"repo":"${{ github.repository }}","branch":"${{ github.ref }}","sourceDir":"${{env.sourceDir}}"}}'
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${{ secrets.WORKFLOW_ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "${event_payload}" \
+            "https://api.github.com/repos/kkmishra233/common-workflows/dispatches"
