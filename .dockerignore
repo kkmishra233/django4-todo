@@ -1,0 +1,9 @@
+README.md
+.github
+Postman
+sonar-project.properties
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
