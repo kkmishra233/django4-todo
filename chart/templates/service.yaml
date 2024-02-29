@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "django-todo.fullname" . }}
+  labels:
+    {{- include "django-todo.labels" . | nindent 4}}
+spec:
+
+  selector:
+    {{- include "django-todo.selectorLabels" . | nindent 6}}
+  ports:
+  - name: http
+    protocol: TCP
+    port: {{.Values.service.port.podPort}}
+    {{- if .Values.service.port.nodePort}}
+    nodePort: {{.Values.service.port.nodePort}}
+    {{- end }}
+    targetPort: {{.Values.service.port.podPort}}
+  type: {{ .Values.service.type }}

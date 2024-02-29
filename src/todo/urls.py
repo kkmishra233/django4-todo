@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.urls import path
 
-from todo.views import TodoList, TodoDetail
+from todo.views import TodoList, TodoDetail , StatusCheck
 
 urlpatterns = [
     path('todo/', TodoList.as_view()),
-    path('todo/<int:pk>',TodoDetail.as_view())
+    path('todo/<int:pk>',TodoDetail.as_view()),
+    path('status', StatusCheck.as_view(), name='status-check')
 ]

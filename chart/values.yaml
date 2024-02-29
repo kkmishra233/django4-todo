@@ -1,0 +1,47 @@
+replicas: 1
+
+image:
+  repository: localhost:5000/django4-todo
+  pullPolicy: Always
+  tag: latest
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  port:
+    podPort: 8080
+    nodePort: 30100
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+storageClassName: "openebs-hostpath"
+
+livenessProbe:
+  httpGet:
+    path: /api/status
+    port: 8080
+  failureThreshold: 5
+  periodSeconds: 60
+  initialDelaySeconds: 5
+readinessProbe:
+  httpGet:
+    path: /api/status
+    port: 8080
+  failureThreshold: 5
+  periodSeconds: 60
+  initialDelaySeconds: 5
+startupProbe:
+  httpGet:
+    path: /api/status
+    port: 8080
+  failureThreshold: 5
+  periodSeconds: 60
+  initialDelaySeconds: 5

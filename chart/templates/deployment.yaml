@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "django-todo.fullname" . }}
+  labels:
+    {{- include "django-todo.labels" . | nindent 4}}
+spec:
+  replicas: {{.Values.replicas}}
+  selector:
+    matchLabels:
+      {{- include "django-todo.selectorLabels" . | nindent 6}}
+  template:
+    metadata:
+      labels:
+        {{- include "django-todo.labels" . | nindent 8}}
+    spec:
+      terminationGracePeriodSeconds: 10
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values: 
+                - linux
+      volumes:
+      - name: api-volume
+        persistentVolumeClaim:
+          claimName: {{ include "django-todo.fullname" . }}
+      containers:
+      - name: {{ include "django-todo.fullname" . }}
+        image: {{ include "django-todo.image" . | quote }}
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: {{ include "django-todo.fullname" . }}
+          - configMapRef:
+              name: {{ include "django-todo.fullname" . }}
+        {{- if .Values.resources }}
+        resources:
+          {{ .Values.resources | toYaml | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          {{ .Values.livenessProbe | toYaml | nindent 10 }}
+        readinessProbe:
+          {{ .Values.readinessProbe | toYaml | nindent 10 }}
+        startupProbe:
+          {{ .Values.startupProbe | toYaml | nindent 10 }}
+        volumeMounts:
+        - name: api-volume
+          mountPath: /usr/src/app/logs
+      
+
+
