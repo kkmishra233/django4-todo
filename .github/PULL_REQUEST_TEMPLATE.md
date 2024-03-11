@@ -1,6 +1,10 @@
-## Checklist
+### Description
+Describe the changes in this pull request.
 
-- [ ] Check this feature works as expected
-- [ ] Ensure all tests pass
-- [ ] Update documentation if necessary
-- [ ] Follows coding style guidelines
+### Related Issue
+Fixes # (issue)
+
+### Checklist
+- [ ] Tests have been added or updated
+- [ ] Documentation has been updated
+- [ ] Code follows the coding style guidelines
