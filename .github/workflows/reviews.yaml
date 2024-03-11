@@ -1,8 +1,8 @@
-name: PR Approval Checklist
+name: PR Checklist
 
 on:
-  pull_request_review:
-    types: [submitted]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
   checklist:
@@ -13,33 +13,42 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
-          // Fetch pull request details
           const { data: pullRequest } = await github.rest.pulls.get({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number
           });
+          
+          // Extract checklist items from the pull request body
+          const checklistItems = pullRequest.body.match(/- \[([ x])\] .+/g) || [];
 
           // Check if all checklist items are marked as completed
-          const checklist = ['Tests have been added or updated', 'Documentation has been updated', 'Code follows the coding style guidelines'];
-          const missingItems = checklist.filter(item => !pullRequest.body.includes(`- [x] ${item}`));
+          const incompleteItems = checklistItems.filter(item => !item.includes('[x]'));
 
-          if (missingItems.length > 0) {
-            // Provide feedback
-            await github.rest.pulls.createReview({
+          if (incompleteItems.length > 0) {
+            // Generate comment with missing checklist items
+            const commentBody = `PR Checklist incomplete. Missing items:\n${incompleteItems.join('\n')}`;
+
+            // Add comment to the pull request
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              event: 'COMMENT',
-              body: `PR Checklist incomplete. Missing items: ${missingItems.join(', ')}`
+              issue_number: context.payload.pull_request.number,
+              body: commentBody
             });
 
-            // Block PR merge
-            await github.rest.pulls.merge({
+            // Prevent PR merge
+            await github.rest.pulls.updateBranchProtection({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number,
-              merge_method: 'squash', // Choose appropriate merge method
-              merge_state: 'blocked'
+              branch: pullRequest.head.ref,
+              enforce_admins: true,
+              required_pull_request_reviews: {
+                dismiss_stale_reviews: true,
+                require_code_owner_reviews: false,
+                required_approving_review_count: 0
+              }
             });
+
+            core.setFailed('PR Checklist incomplete. Please complete all checklist items before merging.');
           }
