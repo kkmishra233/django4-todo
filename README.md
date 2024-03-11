@@ -28,7 +28,9 @@ python manage.py runserver
 
 ```
 trivy image --severity HIGH,CRITICAL todo:latest
+
 or
+
 trivy image --severity CRITICAL --exit-code 1 todo:latest && echo "Pass: No critical vulnerabilities found." || echo "Fail: Critical vulnerabilities found."
 ```
 
