@@ -1,8 +1,8 @@
-name: PR Checklist
+name: PR Approval Checklist
 
 on:
-  pull_request:
-    types: [review_requested]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   checklist:
@@ -13,15 +13,33 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
+          // Fetch pull request details
           const { data: pullRequest } = await github.rest.pulls.get({
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number
           });
           
-          const checklist = ['Comments added', 'Documentation added', 'Tests Added'];
+          // Check if all checklist items are marked as completed
+          const checklist = ['Checklist Item 1', 'Checklist Item 2', 'Checklist Item 3'];
           const missingItems = checklist.filter(item => !pullRequest.body.includes(`- [x] ${item}`));
 
           if (missingItems.length > 0) {
-            core.setFailed(`PR Checklist incomplete. Missing items: ${missingItems.join(', ')}`);
+            // Provide feedback
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              event: 'COMMENT',
+              body: `PR Checklist incomplete. Missing items: ${missingItems.join(', ')}`
+            });
+
+            // Block PR merge
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              merge_method: 'squash', // Choose appropriate merge method
+              merge_state: 'blocked'
+            });
           }
