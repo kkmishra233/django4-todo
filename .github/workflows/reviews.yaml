@@ -19,9 +19,9 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number
           });
-          
+
           // Check if all checklist items are marked as completed
-          const checklist = ['Checklist Item 1', 'Checklist Item 2', 'Checklist Item 3'];
+          const checklist = ['Tests have been added or updated', 'Documentation has been updated', 'Code follows the coding style guidelines'];
           const missingItems = checklist.filter(item => !pullRequest.body.includes(`- [x] ${item}`));
 
           if (missingItems.length > 0) {
