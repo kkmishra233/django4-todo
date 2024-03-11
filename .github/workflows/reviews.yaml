@@ -1,0 +1,27 @@
+name: PR Checklist
+
+on:
+  pull_request:
+    types: [review_requested]
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check PR Checklist
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const { data: pullRequest } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number
+          });
+          
+          const checklist = ['Comments added', 'Documentation added', 'Tests Added'];
+          const missingItems = checklist.filter(item => !pullRequest.body.includes(`- [x] ${item}`));
+
+          if (missingItems.length > 0) {
+            core.setFailed(`PR Checklist incomplete. Missing items: ${missingItems.join(', ')}`);
+          }
