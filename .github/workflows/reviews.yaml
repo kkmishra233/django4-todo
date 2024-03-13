@@ -9,13 +9,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
   pull_request_review:
-    types: [submitted]
+    types: [submitted, requested_changes,dismissed]
   pull_request_review_comment:
     types: [created]
 
 jobs:
   check-checklist:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_review' || github.event_name == 'pull_request_review_comment' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v2
