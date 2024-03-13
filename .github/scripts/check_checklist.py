@@ -6,6 +6,24 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+def set_checklist_status(github, pr_number, state):
+    # Get the repository and pull request
+    repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
+    pr = repo.get_pull(pr_number)
+
+    # Get the list of labels applied to the pull request
+    labels = [label.name for label in pr.labels]
+
+    # Check if the "Checklist-Passed" label is already applied
+    checklist_passed = 'Checklist-Passed' in labels
+
+    # If the state is success and the label is not applied, apply it
+    if state == 'success' and not checklist_passed:
+        pr.add_to_labels('Checklist-Passed')
+    # If the state is failure and the label is applied, remove it
+    elif state == 'failure' and checklist_passed:
+        pr.remove_from_labels('Checklist-Passed')
+
 def main():
     # Initialize GitHub client
     github_token = os.getenv('GITHUB_TOKEN')
@@ -41,8 +59,10 @@ def main():
     # Comment on the PR accordingly
     if all_checked:
         pr.create_issue_comment("All checklist items are checked! You can merge this pull request.")
+        set_checklist_status(github, pr_number, 'success')
     else:
         pr.create_issue_comment("Not all checklist items are checked. Please complete the checklist before merging.")
+        set_checklist_status(github, pr_number, 'failure')
 
 if __name__ == "__main__":
     main()
