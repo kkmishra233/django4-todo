@@ -1,54 +1,26 @@
-name: PR Checklist
+name: Check Checklist
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  checklist:
+  check-checklist:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check PR Checklist
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const { data: pullRequest } = await github.rest.pulls.get({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number
-          });
-          
-          // Extract checklist items from the pull request body
-          const checklistItems = pullRequest.body.match(/- \[([ x])\] .+/g) || [];
+      - name: Check out code
+        uses: actions/checkout@v2
 
-          // Check if all checklist items are marked as completed
-          const incompleteItems = checklistItems.filter(item => !item.includes('[x]'));
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-          if (incompleteItems.length > 0) {
-            // Generate comment with missing checklist items
-            const commentBody = `PR Checklist incomplete. Missing items:\n${incompleteItems.join('\n')}`;
+      - name: Install dependencies
+        run: pip install -r .github/requirements.txt
 
-            // Add comment to the pull request
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body: commentBody
-            });
-
-            // Prevent PR merge
-            await github.rest.pulls.updateBranchProtection({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              branch: pullRequest.head.ref,
-              enforce_admins: true,
-              required_pull_request_reviews: {
-                dismiss_stale_reviews: true,
-                require_code_owner_reviews: false,
-                required_approving_review_count: 0
-              }
-            });
-
-            core.setFailed('PR Checklist incomplete. Please complete all checklist items before merging.');
-          }
+      - name: Run checklist check
+        run: python .github/scripts/check_checklist.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
