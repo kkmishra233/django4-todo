@@ -16,12 +16,12 @@ def main():
 
     # Define checklist items
     checklist_items = [
-        "Item 1",
-        "Item 2",
-        "Item 3"
+        "Tests have been added or updated",
+        "Documentation has been updated",
+        "Code follows the coding style guidelines"
         # Add more checklist items as needed
     ]
-
+    
     # Get the PR object
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
     pr = repo.get_pull(int(pr_number))
