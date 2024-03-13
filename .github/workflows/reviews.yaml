@@ -22,5 +22,5 @@ jobs:
       - name: Run checklist check
         run: python .github/scripts/check_checklist.py
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SECRET_GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
