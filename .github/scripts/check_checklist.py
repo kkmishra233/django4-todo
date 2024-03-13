@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-def set_checklist_status(github, pr_number, state):
+def set_checklist_status(github, pr_number, all_checked):
     # Get the repository and pull request
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
-    pr = repo.get_pull(pr_number)
+    pr = repo.get_pull(int(pr_number))
 
     # Get the list of labels applied to the pull request
     labels = [label.name for label in pr.labels]
@@ -17,11 +17,16 @@ def set_checklist_status(github, pr_number, state):
     # Check if the "Checklist-Passed" label is already applied
     checklist_passed = 'Checklist-Passed' in labels
 
-    # If the state is success and the label is not applied, apply it
-    if state == 'success' and not checklist_passed:
+    # Determine the status based on the checklist result
+    if all_checked:
+        status = 'success'
+    else:
+        status = 'failure'
+
+    # Update the status of the "Checklist-Passed" label accordingly
+    if status == 'success' and not checklist_passed:
         pr.add_to_labels('Checklist-Passed')
-    # If the state is failure and the label is applied, remove it
-    elif state == 'failure' and checklist_passed:
+    elif status == 'failure' and checklist_passed:
         pr.remove_from_labels('Checklist-Passed')
 
 def main():

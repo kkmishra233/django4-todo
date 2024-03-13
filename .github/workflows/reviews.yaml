@@ -6,14 +6,10 @@ on:
       pr_number:
         description: 'Pull request number'
         required: true
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
   pull_request_review:
-    types: [submitted, dismissed]
+    types: [submitted, requested_changes, dismissed]
   pull_request_review_comment:
     types: [created]
-  pull_request_target:
-    types: [opened, synchronize, reopened, closed, reopened]
 
 jobs:
   check-checklist:
