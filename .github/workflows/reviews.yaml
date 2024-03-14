@@ -7,6 +7,7 @@ on:
 jobs:
   check-checklist:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_review'
     steps:
       - name: Check out code
         uses: actions/checkout@v2
