@@ -39,6 +39,7 @@ def main():
 
     # Extract checklist items from the template contents
     checklist_items = re.findall(r'\[ \] (.*)', template_contents)
+    print(f"Retrived checklist items: {checklist_items}")
 
     # Get the PR object
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
