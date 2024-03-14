@@ -1,3 +1,11 @@
+import os
+import re
+from github import Github, GithubException
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 def set_checklist_status(github, pr_number, all_checked):
     # Get the repository and pull request
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
