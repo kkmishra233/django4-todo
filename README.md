@@ -39,3 +39,6 @@ trivy image --severity CRITICAL --exit-code 1 todo:latest && echo "Pass: No crit
 ```
 docker run --rm -t -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive:latest --ci todo:latest --highestUserWastedPercent=disabled --lowestEfficiency=0.85
 ```
+
+
+testting
