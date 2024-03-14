@@ -1,15 +1,8 @@
 name: Check Checklist
 
 on:
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: 'Pull request number'
-        required: true
   pull_request_review:
     types: [submitted, requested_changes, dismissed]
-  pull_request_review_comment:
-    types: [created]
 
 jobs:
   check-checklist:
