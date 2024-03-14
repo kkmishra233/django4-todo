@@ -17,16 +17,10 @@ def set_checklist_status(github, pr_number, all_checked):
     # Check if the "Checklist-Passed" label is already applied
     checklist_passed = 'Checklist-Passed' in labels
 
-    # Determine the status based on the checklist result
-    if all_checked:
-        status = 'success'
-    else:
-        status = 'failure'
-
     # Update the status of the "Checklist-Passed" label accordingly
-    if status == 'success' and not checklist_passed:
+    if all_checked and not checklist_passed:
         pr.add_to_labels('Checklist-Passed')
-    elif status == 'failure' and checklist_passed:
+    elif not all_checked and checklist_passed:
         pr.remove_from_labels('Checklist-Passed')
 
 def main():
