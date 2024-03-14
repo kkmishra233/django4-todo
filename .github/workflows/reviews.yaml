@@ -4,9 +4,6 @@ on:
   pull_request_review:
     types: [submitted, requested_changes, dismissed]
 
-env:
-  PULL_REQUEST_TEMPLATE: .github/PULL_REQUEST_TEMPLATE.md
-  
 jobs:
   check-checklist:
     runs-on: ubuntu-latest
@@ -31,3 +28,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.inputs.pr_number || github.event.pull_request.number }}
+          PULL_REQUEST_TEMPLATE: .github/PULL_REQUEST_TEMPLATE.md
