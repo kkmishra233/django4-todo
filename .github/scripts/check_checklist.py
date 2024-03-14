@@ -30,13 +30,15 @@ def main():
     # Get the PR number from the context
     pr_number = os.getenv('PR_NUMBER')
 
-    # Define checklist items
-    checklist_items = [
-        "Tests have been added or updated",
-        "Documentation has been updated",
-        "Code follows the coding style guidelines"
-        # Add more checklist items as needed
-    ]
+    # Get the pull request template file path
+    template_file_path = os.getenv('PULL_REQUEST_TEMPLATE')
+
+    # Read the pull request template file
+    with open(template_file_path, 'r') as template_file:
+        template_contents = template_file.read()
+
+    # Extract checklist items from the template contents
+    checklist_items = re.findall(r'\[ \] (.*)', template_contents)
 
     # Get the PR object
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
