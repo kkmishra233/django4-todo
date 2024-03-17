@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "todo.fullname" . }}
+  labels:
+    {{- include "todo.labels" . | nindent 4}}
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.NameSpace }}
+  name: {{ include "todo.fullname" . }}
+  labels:
+    {{- include "todo.labels" . | nindent 4}}
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "todo.fullname" . }}
+  labels:
+    {{- include "todo.labels" . | nindent 4}}
+  namespace: {{ .Release.NameSpace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "todo.fullname" . }}
+  namespace: {{ .Release.NameSpace }}
+roleRef:
+  kind: Role 
+  name: {{ include "todo.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io

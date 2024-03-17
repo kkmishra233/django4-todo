@@ -1,8 +1,14 @@
 replicas: 1
 
+application:
+  djangoSecret: "Secret value"
+  byteCode: "1"
+  bufferCode: "1"
+
 image:
-  repository: localhost:5000/django4-todo
-  pullPolicy: Always
+  registry: ""
+  repository: todo
+  pullPolicy: IfNotPresent
   tag: latest
 
 nameOverride: ""
@@ -14,6 +20,23 @@ service:
     podPort: 8080
     nodePort: 30100
 
+automountServiceAccountToken: true
+horizontalPodAutoscaler:
+  enabled: false
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+
 resources:
   limits:
     cpu: 100m
@@ -22,7 +45,7 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-storageClassName: "openebs-hostpath"
+storageClassName: "microk8s-hostpath"
 
 livenessProbe:
   httpGet:

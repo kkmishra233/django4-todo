@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "django-todo.fullname" . }}
+  name: {{ include "todo.fullname" . }}
   labels:
-    {{- include "django-todo.labels" . | nindent 4}}
+    {{- include "todo.labels" . | nindent 4}}
 spec:
   storageClassName: {{ .Values.storageClassName }}
   accessModes:

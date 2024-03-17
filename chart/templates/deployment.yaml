@@ -1,20 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "django-todo.fullname" . }}
+  name: {{ include "todo.fullname" . }}
   labels:
-    {{- include "django-todo.labels" . | nindent 4}}
+    {{- include "todo.labels" . | nindent 4}}
 spec:
   replicas: {{.Values.replicas}}
   selector:
     matchLabels:
-      {{- include "django-todo.selectorLabels" . | nindent 6}}
+      {{- include "todo.selectorLabels" . | nindent 6}}
   template:
     metadata:
       labels:
-        {{- include "django-todo.labels" . | nindent 8}}
+        {{- include "todo.labels" . | nindent 8}}
     spec:
       terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ include "todo.fullname" . }}
+      automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -27,20 +29,20 @@ spec:
       volumes:
       - name: api-volume
         persistentVolumeClaim:
-          claimName: {{ include "django-todo.fullname" . }}
+          claimName: {{ include "todo.fullname" . }}
       containers:
-      - name: {{ include "django-todo.fullname" . }}
-        image: {{ include "django-todo.image" . | quote }}
+      - name: {{ include "todo.fullname" . }}
+        image: {{ include "todo.image" . | quote }}
         ports:
         - containerPort: 8080
         envFrom:
           - secretRef:
-              name: {{ include "django-todo.fullname" . }}
+              name: {{ include "todo.fullname" . }}
           - configMapRef:
-              name: {{ include "django-todo.fullname" . }}
+              name: {{ include "todo.fullname" . }}
         {{- if .Values.resources }}
         resources:
-          {{ .Values.resources | toYaml | nindent 10 }}
+          {{- .Values.resources | toYaml | nindent 10 }}
         {{- end }}
         livenessProbe:
           {{ .Values.livenessProbe | toYaml | nindent 10 }}
