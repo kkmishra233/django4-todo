@@ -21,19 +21,19 @@ ENV PYTHONUNBUFFERED 1
 COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
 # Copy the source code
 COPY src/ .
+# setup supervisored
+RUN apt-get update && \
+    apt-get install -y \
+    supervisor \
+    bc
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+# Copy uptime script
+COPY uptime-check.sh /usr/local/bin/uptime-check.sh
+RUN chmod +x /usr/local/bin/uptime-check.sh
 # Copy the entrypoint script and make it executable
 COPY ./entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
-# Create a non-root user
-RUN adduser --disabled-password --gecos '' devops
-# Set ownership of the application directory to the non-root user
-RUN chown -R devops /usr/src/app/
-# Set permissions to read and execute only for the devops user
-RUN find /usr/src/app/ -type f -exec chmod 500 {} +
-RUN find /usr/src/app/ -type d -exec chmod 500 {} +
-# Switch to the non-root user
-USER devops
 # Expose port 8080
 EXPOSE 8080
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
