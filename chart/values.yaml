@@ -7,9 +7,10 @@ application:
 
 image:
   registry: ""
-  repository: todo
+  repository: django4-todo
   pullPolicy: IfNotPresent
-  tag: latest
+  tag: 1.0.0
+  imagePullSecrets: ""
 
 nameOverride: ""
 fullnameOverride: ""
@@ -45,7 +46,7 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-storageClassName: "microk8s-hostpath"
+storageClassName: ""
 
 livenessProbe:
   httpGet:

@@ -30,6 +30,10 @@ spec:
       - name: api-volume
         persistentVolumeClaim:
           claimName: {{ include "todo.fullname" . }}
+      {{- if  .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.imagePullSecrets }}
+      {{- end }}
       containers:
       - name: {{ include "todo.fullname" . }}
         image: {{ include "todo.image" . | quote }}
