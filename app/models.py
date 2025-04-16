@@ -2,11 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 class Todo(models.Model):
-    CURRENT_STATUS=[
-        ("O","Open"),
-        ("I","InProgress"),
-        ("D","Done")
-    ]
     id =  models.BigAutoField(primary_key=True)
     task = models.CharField(max_length=100,unique=True)
     description = models.CharField(max_length=200)

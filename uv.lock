@@ -85,6 +85,41 @@ wheels = [
 ]
 
 [[package]]
+name = "django4-todo"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "django" },
+    { name = "django-filter" },
+    { name = "djangorestframework" },
+    { name = "drf-spectacular" },
+    { name = "drf-yasg" },
+]
+
+[package.dev-dependencies]
+tests = [
+    { name = "coverage" },
+    { name = "pytest" },
+    { name = "pytest-django" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "django", specifier = ">=5.2" },
+    { name = "django-filter", specifier = ">=25.1" },
+    { name = "djangorestframework", specifier = ">=3.16.0" },
+    { name = "drf-spectacular", specifier = ">=0.28.0" },
+    { name = "drf-yasg", specifier = ">=1.21.10" },
+]
+
+[package.metadata.requires-dev]
+tests = [
+    { name = "coverage", specifier = ">=7.8.0" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-django", specifier = ">=4.11.1" },
+]
+
+[[package]]
 name = "djangorestframework"
 version = "3.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -301,39 +336,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e5/40/edede8dd6977b0d3da179a342c198ed100dd2aba4be081861ee5911e4da4/sqlparse-0.5.3.tar.gz", hash = "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272", size = 84999 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/5c/bfd6bd0bf979426d405cc6e71eceb8701b148b16c21d2dc3c261efc61c7b/sqlparse-0.5.3-py3-none-any.whl", hash = "sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca", size = 44415 },
-]
-
-[[package]]
-name = "src"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "django" },
-    { name = "django-filter" },
-    { name = "djangorestframework" },
-    { name = "drf-spectacular" },
-    { name = "drf-yasg" },
-]
-
-[package.dev-dependencies]
-tests = [
-    { name = "coverage" },
-    { name = "pytest-django" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "django", specifier = ">=5.2" },
-    { name = "django-filter", specifier = ">=25.1" },
-    { name = "djangorestframework", specifier = ">=3.16.0" },
-    { name = "drf-spectacular", specifier = ">=0.28.0" },
-    { name = "drf-yasg", specifier = ">=1.21.10" },
-]
-
-[package.metadata.requires-dev]
-tests = [
-    { name = "coverage", specifier = ">=7.8.0" },
-    { name = "pytest-django", specifier = ">=4.11.1" },
 ]
 
 [[package]]

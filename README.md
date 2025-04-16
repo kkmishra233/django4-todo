@@ -61,3 +61,9 @@ docker run -it --rm -p 8888:8080 -e djangoSecret=1234 -e PYTHONDONTWRITEBYTECODE
 curl http://127.0.0.1:8888/api/todo/
 
 output: [{"id":2,"task":"Create a bitbucket repo for sample project","description":"Create the bitbucket repo for sample project","create_date":"2024-01-26","update_date":"2024-01-26","owner":1}]
+
+
+# unit test
+uv run coverage run -m pytest
+uv run coverage report
+uv run coverage html
