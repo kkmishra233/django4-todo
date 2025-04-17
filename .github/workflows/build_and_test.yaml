@@ -2,7 +2,7 @@ name: Build & Test
 
 env:
   event_type: "on-demand-python-test"
-  sourceDir: "src"
+  sourceDir: "."
 
 on:
   pull_request:
