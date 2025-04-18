@@ -16,15 +16,16 @@ chmod +x ~/.docker/cli-plugins/docker-buildx
 
 # docker build
 docker build --progress=plain --target=runtime --tag=django4-todo --no-cache .
-
-# docker run
 docker run --name django4-todo -it --rm -p 8888:8080 django4-todo:latest
+access at :  http://localhost:8888/api/v1/docs/
 
 # docker debug
 docker run -it --rm --entrypoint /bin/bash django4-todo:latest
 
-# access app
-http://localhost:8888/api/v1/docs/
+# unittest
+docker build --progress=plain --target=unittest --tag=django4-todo --no-cache .
+docker run --name django4-todo -it --rm -p 8888:8080 django4-todo:latest
+
 
 ## Run vulnerability scan
 
