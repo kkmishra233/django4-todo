@@ -1,17 +1,30 @@
 # Development
 
-## Setup
+## dev Setup
 ```bash
-pip install virtualenv
-virtualenv venv
-venv\\Scripts\\activate
-cd src
-pip install -r requirements.txt
-python manage.py createsuperuser
+uv sync
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser
 python manage.py runserver
 ```
+
+# setup buildx
+mkdir -p ~/.docker/cli-plugins/
+curl -SL https://github.com/docker/buildx/releases/latest/download/buildx-v0.23.0.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
+chmod +x ~/.docker/cli-plugins/docker-buildx
+
+# docker build
+docker build --progress=plain --target=runtime --tag=django4-todo --no-cache .
+
+# docker run
+docker run --name django4-todo -it --rm -p 8888:8080 django4-todo:latest
+
+# docker debug
+docker run -it --rm --entrypoint /bin/bash django4-todo:latest
+
+# access app
+http://localhost:8888/api/v1/docs/
 
 ## Run vulnerability scan
 
